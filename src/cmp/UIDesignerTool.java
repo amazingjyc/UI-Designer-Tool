@@ -202,18 +202,25 @@ public class UIDesignerTool extends Application {
 					System.out.println(uiList);
 					System.out.println();
 
-					JSONObject labelsList = (JSONObject) uiList.get(0);
-					System.out.println(labelsList);
-					System.out.println();
-					JSONObject buttonsList = (JSONObject) uiList.get(1);
-					System.out.println(buttonsList);
-					System.out.println();
-					JSONObject textFieldsList = (JSONObject) uiList.get(2);
-					System.out.println(textFieldsList);
-					System.out.println();
+					JSONObject labelsList = null;
+					JSONObject buttonsList = null;
+					JSONObject textFieldsList = null;
 
-					loadUI(labelsList, buttonsList, textFieldsList, root);
+					for (int i = 0; i < uiList.size(); i++) {
+						JSONObject object = (JSONObject) uiList.get(i);
+						String check = object + "";
+						if (check.contains("Labels")) {
+							labelsList = object;
+						} else if (check.contains("Buttons")) {
+							buttonsList = object;
+						} else if (check.contains("Text Fields")) {
+							textFieldsList = object;
+						}
+					}
 
+					if (uiList.size() > 0) {
+						loadUI(labelsList, buttonsList, textFieldsList, root);
+					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -419,52 +426,59 @@ public class UIDesignerTool extends Application {
 		// Clear UI Screen first
 		clearUIScreen(root);
 
-		JSONArray lList = (JSONArray) labelsList.get("Labels");
-		for (int i = 0; i < lList.size(); i++) {
-			Label newLabel = new Label();
-			JSONObject obj = (JSONObject) lList.get(i);
-			newLabel.setTranslateX((double) obj.get("PositionX"));
-			newLabel.setTranslateY((double) obj.get("PositionY"));
-			newLabel.setText((String) obj.get("Text"));
-			newLabel.setPrefHeight((double) obj.get("Height"));
-			newLabel.setPrefWidth((double) obj.get("Width"));
-			newLabel.setCursor(Cursor.HAND);
-			newLabel.setOnMousePressed(LabelOnMousePressedEventHandler);
-			newLabel.setOnMouseDragged(LabelOnMouseDraggedEventHandler);
-			labels.add(newLabel);
-			root.getChildren().add(newLabel);
+		if (labelsList != null) {
+			JSONArray lList = (JSONArray) labelsList.get("Labels");
+			for (int i = 0; i < lList.size(); i++) {
+				Label newLabel = new Label();
+				JSONObject obj = (JSONObject) lList.get(i);
+				newLabel.setTranslateX((double) obj.get("PositionX"));
+				newLabel.setTranslateY((double) obj.get("PositionY"));
+				newLabel.setText((String) obj.get("Text"));
+				newLabel.setPrefHeight((double) obj.get("Height"));
+				newLabel.setPrefWidth((double) obj.get("Width"));
+				newLabel.setCursor(Cursor.HAND);
+				newLabel.setOnMousePressed(LabelOnMousePressedEventHandler);
+				newLabel.setOnMouseDragged(LabelOnMouseDraggedEventHandler);
+				labels.add(newLabel);
+				root.getChildren().add(newLabel);
+			}
 		}
 
-		JSONArray bList = (JSONArray) buttonsList.get("Buttons");
-		for (int i = 0; i < bList.size(); i++) {
-			Button newButton = new Button();
-			JSONObject obj = (JSONObject) bList.get(i);
-			newButton.setTranslateX((double) obj.get("PositionX"));
-			newButton.setTranslateY((double) obj.get("PositionY"));
-			newButton.setText((String) obj.get("Text"));
-			newButton.setPrefHeight((double) obj.get("Height"));
-			newButton.setPrefWidth((double) obj.get("Width"));
-			newButton.setCursor(Cursor.HAND);
-			newButton.setOnMousePressed(ButtonOnMousePressedEventHandler);
-			newButton.setOnMouseDragged(ButtonOnMouseDraggedEventHandler);
-			buttons.add(newButton);
-			root.getChildren().add(newButton);
+		if (buttonsList != null) {
+
+			JSONArray bList = (JSONArray) buttonsList.get("Buttons");
+			for (int i = 0; i < bList.size(); i++) {
+				Button newButton = new Button();
+				JSONObject obj = (JSONObject) bList.get(i);
+				newButton.setTranslateX((double) obj.get("PositionX"));
+				newButton.setTranslateY((double) obj.get("PositionY"));
+				newButton.setText((String) obj.get("Text"));
+				newButton.setPrefHeight((double) obj.get("Height"));
+				newButton.setPrefWidth((double) obj.get("Width"));
+				newButton.setCursor(Cursor.HAND);
+				newButton.setOnMousePressed(ButtonOnMousePressedEventHandler);
+				newButton.setOnMouseDragged(ButtonOnMouseDraggedEventHandler);
+				buttons.add(newButton);
+				root.getChildren().add(newButton);
+			}
 		}
 
-		JSONArray tList = (JSONArray) textFieldsList.get("Text Fields");
-		for (int i = 0; i < tList.size(); i++) {
-			TextField newTextField = new TextField();
-			JSONObject obj = (JSONObject) tList.get(i);
-			newTextField.setTranslateX((double) obj.get("PositionX"));
-			newTextField.setTranslateY((double) obj.get("PositionY"));
-			newTextField.setText((String) obj.get("Text"));
-			newTextField.setPrefHeight((double) obj.get("Height"));
-			newTextField.setPrefWidth((double) obj.get("Width"));
-			newTextField.setCursor(Cursor.HAND);
-			newTextField.setOnMousePressed(TextFieldOnMousePressedEventHandler);
-			newTextField.setOnMouseDragged(TextFieldOnMouseDraggedEventHandler);
-			textFields.add(newTextField);
-			root.getChildren().add(newTextField);
+		if (textFieldsList != null) {
+			JSONArray tList = (JSONArray) textFieldsList.get("Text Fields");
+			for (int i = 0; i < tList.size(); i++) {
+				TextField newTextField = new TextField();
+				JSONObject obj = (JSONObject) tList.get(i);
+				newTextField.setTranslateX((double) obj.get("PositionX"));
+				newTextField.setTranslateY((double) obj.get("PositionY"));
+				newTextField.setText((String) obj.get("Text"));
+				newTextField.setPrefHeight((double) obj.get("Height"));
+				newTextField.setPrefWidth((double) obj.get("Width"));
+				newTextField.setCursor(Cursor.HAND);
+				newTextField.setOnMousePressed(TextFieldOnMousePressedEventHandler);
+				newTextField.setOnMouseDragged(TextFieldOnMouseDraggedEventHandler);
+				textFields.add(newTextField);
+				root.getChildren().add(newTextField);
+			}
 		}
 	}
 }
