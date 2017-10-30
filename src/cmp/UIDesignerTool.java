@@ -218,9 +218,7 @@ public class UIDesignerTool extends Application {
 						}
 					}
 
-					if (uiList.size() > 0) {
-						loadUI(labelsList, buttonsList, textFieldsList, root);
-					}
+					loadUI(labelsList, buttonsList, textFieldsList, root);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -419,6 +417,8 @@ public class UIDesignerTool extends Application {
 		buttons.clear();
 		textFields.clear();
 		labels.clear();
+		resizeWidth.setText("");
+		resizeHeight.setText("");
 	}
 
 	public static void loadUI(JSONObject labelsList, JSONObject buttonsList, JSONObject textFieldsList, Group root) {
