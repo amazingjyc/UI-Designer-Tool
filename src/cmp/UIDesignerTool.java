@@ -43,9 +43,12 @@ public class UIDesignerTool extends Application {
 	private Label resizeLabel;
 	private Label widthLabel;
 	private Label heightLabel;
+	private Label changeTextLabel;
+	private Label textLabel;
 	private static TextField resizeWidth;
 	private static TextField resizeHeight;
-	private Button resizeButton;
+	private static TextField changeText;
+	private Button resizeButton, deleteButton, changeTextButton;
 	private Button loadJSON;
 
 	private static ArrayList<Button> buttons = new ArrayList<Button>();
@@ -93,6 +96,42 @@ public class UIDesignerTool extends Application {
 		resizeHeight.setPrefHeight(10);
 		resizeHeight.setPrefWidth(120);
 
+		textLabel = new Label("Edit Button/Label Text");
+		textLabel.setTranslateX(30);
+		textLabel.setTranslateY(195);
+
+		changeTextLabel = new Label("Text:");
+		changeTextLabel.setTranslateX(30);
+		changeTextLabel.setTranslateY(220);
+
+		changeText = new TextField();
+		changeText.setTranslateX(80);
+		changeText.setTranslateY(220);
+		changeText.setPrefHeight(10);
+		changeText.setPrefWidth(120);
+
+		changeTextButton = new Button("Edit");
+		changeTextButton.setTranslateX(80);
+		changeTextButton.setTranslateY(255);
+		changeTextButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				if (pointer == 1) {
+					if(!changeText.getText().equals(null)){
+						currButton.setText(changeText.getText());
+						System.out.println("Edited Text in Button");
+						changeText.setText("");
+					}
+				} else if (pointer == 2) {
+					if(!changeText.getText().equals(null)){
+						currLabel.setText(changeText.getText());
+						System.out.println("Edited Text in Label");
+						changeText.setText("");
+					}
+				}
+			}
+		});
+
 		resizeButton = new Button("Resize");
 		resizeButton.setTranslateX(80);
 		resizeButton.setTranslateY(150);
@@ -115,13 +154,43 @@ public class UIDesignerTool extends Application {
 			}
 		});
 
+		deleteButton = new Button("Delete");
+		deleteButton.setTranslateX(135);
+		deleteButton.setTranslateY(150);
+		deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				if (pointer == 0) {
+					textFields.remove(currTextField);
+					root.getChildren().remove(currTextField);
+					System.out.println("Deleted TextField");
+					currTextField = null;
+					pointer = -1;
+				} else if (pointer == 1) {
+					buttons.remove(currButton);
+					root.getChildren().remove(currButton);
+					System.out.println("Deleted Button");
+					currButton = null;
+					pointer = -1;
+				} else if (pointer == 2) {
+					labels.remove(currLabel);
+					root.getChildren().remove(currLabel);
+					System.out.println("Deleted Label");
+					currLabel = null;
+					pointer = -1;
+				}
+			}
+		});
+
 		labelButton = new Button("Add Label");
-		labelButton.setTranslateX(240);
+		labelButton.setTranslateX(245);
 		labelButton.setTranslateY(80);
 		labelButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				Label label = new Label("New Label");
+				label.setTranslateX(400);
+				label.setTranslateY(400);
 				label.setCursor(Cursor.HAND);
 				label.setOnMousePressed(LabelOnMousePressedEventHandler);
 				label.setOnMouseDragged(LabelOnMouseDraggedEventHandler);
@@ -131,12 +200,14 @@ public class UIDesignerTool extends Application {
 		});
 
 		textFieldButton = new Button("Add TextField");
-		textFieldButton.setTranslateX(340);
+		textFieldButton.setTranslateX(345);
 		textFieldButton.setTranslateY(80);
 		textFieldButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				TextField textField = new TextField();
+				textField.setTranslateX(470);
+				textField.setTranslateY(400);
 				textField.setCursor(Cursor.HAND);
 				textField.setOnMousePressed(TextFieldOnMousePressedEventHandler);
 				textField.setOnMouseDragged(TextFieldOnMouseDraggedEventHandler);
@@ -152,6 +223,8 @@ public class UIDesignerTool extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				Button button = new Button("New Button");
+				button.setTranslateX(630);
+				button.setTranslateY(400);
 				button.setCursor(Cursor.HAND);
 				button.setOnMousePressed(ButtonOnMousePressedEventHandler);
 				button.setOnMouseDragged(ButtonOnMouseDraggedEventHandler);
@@ -230,8 +303,8 @@ public class UIDesignerTool extends Application {
 		});
 
 		root.getChildren().addAll(contentLabel, labelButton, textFieldButton, buttonButton, renderButton,
-				clearAllButton, resizeLabel, loadJSON, resizeButton, widthLabel, heightLabel, resizeWidth,
-				resizeHeight);
+				clearAllButton, resizeLabel, loadJSON, resizeButton, deleteButton, changeTextButton, widthLabel, heightLabel, resizeWidth,
+				textLabel, changeText, changeTextLabel, resizeHeight);
 
 		primaryStage.setResizable(false);
 		primaryStage.setScene(new Scene(root, 1000, 750));
@@ -257,7 +330,6 @@ public class UIDesignerTool extends Application {
 			resizeHeight.setText(label.getHeight() + "");
 			currLabel = label;
 			pointer = 2;
-
 		}
 	};
 
@@ -272,6 +344,14 @@ public class UIDesignerTool extends Application {
 
 			((Label) (t.getSource())).setTranslateX(newTranslateX);
 			((Label) (t.getSource())).setTranslateY(newTranslateY);
+		}
+	};
+
+	static EventHandler<MouseEvent> LabelOnMouseDeselectedEventHandler = new EventHandler<MouseEvent>() {
+
+		@Override
+		public void handle(MouseEvent event) {
+
 		}
 	};
 
@@ -394,7 +474,7 @@ public class UIDesignerTool extends Application {
 
 		// Write JSON file
 		try (FileWriter file = new FileWriter(
-				"C:\\Users\\jarre\\eclipse-workspace\\UI Designer Tool\\output\\UI.json")) {
+				"C:\\Users\\Specter94\\Documents\\Workspace\\UI Designer Tool\\output\\UI.json")) {
 
 			file.write(uiList.toJSONString());
 			file.flush();
